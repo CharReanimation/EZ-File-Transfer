@@ -1,21 +1,86 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <link rel="stylesheet" href="./css/style.css">
-  <meta charset="UTF-8">
-  <title>EZ FILE TRANSFER</title>
-</head>
-<body>
-  <h1>UPLOAD FILE 📤 </h1>
-  <form id="uploadForm">
-    <input type="file" name="file" required />
-    <button type="submit">UPLOAD</button>
-  </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EZ FILE TRANSFER</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
 
-  <h1>DOWNLOAD FILE📥 </h1>
-  <ul id="fileList"></ul>
+  <body>
+    <main class="container">
+      <!-- Upload Section -->
+      <h1>UPLOAD FILE 📤</h1>
 
-  <!-- Scripts -->
-  <script src="./Script/script.js"></script>
-</body>
+      <form id="uploadForm">
+        <!-- Drag and Drop Area -->
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-icon">📂</div>
+          <h2>Drag & Drop Files Here</h2>
+          <p>拖拽文件到这里，或点击按钮选择多个文件</p>
+
+          <input type="file" id="fileInput" multiple hidden />
+
+          <button type="button" id="selectFilesBtn">SELECT FILES</button>
+
+          <!-- Original Filename Option -->
+          <label class="filename-option">
+            <input type="checkbox" id="useOriginalFilename" />
+            <span>Use Original Filename</span>
+          </label>
+
+          <p class="filename-hint">
+            When enabled, original filenames are preserved. Duplicate filenames
+            will automatically receive a suffix.
+          </p>
+        </div>
+
+        <!-- Selected Files -->
+        <div class="queue-header">
+          <h3>Selected Files</h3>
+          <button type="button" id="clearFilesBtn" class="text-button">
+            CLEAR ALL
+          </button>
+        </div>
+
+        <ul id="uploadQueue" class="upload-queue"></ul>
+
+        <!-- Overall Upload Progress -->
+        <div id="overallProgress" class="progress-container" hidden>
+          <div class="progress-header">
+            <span id="progressLabel">Uploading...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+
+          <div
+            id="progressTrack"
+            class="progress-track"
+            role="progressbar"
+            aria-label="Overall upload progress"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+        </div>
+
+        <!-- Upload Button -->
+        <button type="submit" id="uploadBtn" disabled>UPLOAD ALL</button>
+
+        <!-- Upload Status -->
+        <p id="uploadStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <hr />
+
+      <!-- Download Section -->
+      <h1>DOWNLOAD FILE 📥</h1>
+
+      <ul id="fileList" class="file-list"></ul>
+    </main>
+
+    <!-- Scripts -->
+    <script src="./Script/script.js"></script>
+  </body>
 </html>
