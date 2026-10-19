@@ -1,53 +1,88 @@
-# EZ_FILE_TRANSFER
+# EZ File Transfer
 
-## Intro
+[English](README.md) | [简体中文](README_CN.md)
 
-This is an easy **File Transfer Web Application** based on *Node*.  
-You can transfer FILES between your *Computer(Server)* and your *Phone(Client)*; or even other devices, probably?  
-Very easy, so I think that's it for talking about this project intro.  
+A tiny self-hosted web app for moving files between devices on the same network — push a file from your phone and grab it on your PC, or vice versa. No cloud, no account, no install on the client: open a URL in any browser and you are transferring.
 
-## Problem Solved
+It runs as a single Node server on your machine. Every device that can reach that machine over Wi‑Fi / LAN gets the same upload + download page.
 
-I know, there are a lot of ways to transfer files between devices in the same Network, but I think I'd better just create one for myself.  
-Yeah, to find a solution, building one is even faster......  
-With this project, you can transfer your FILES between your Computer(Server) and your Phone(Client) in the same Network.
+## Features
 
-## Build
+- **Drag & drop or multi-select** — queue several files at once.
+- **Live progress** — per-file bars plus an overall progress bar while uploading.
+- **Automatic filename handling** — uploads get a unique random name by default, or keep their original name with an option to auto-suffix duplicates.
+- **Instant downloads** — the page lists everything on the server, one click to pull it down.
+- **Zero client setup** — the front end is plain HTML/CSS/JS, no build step, no framework.
+- **Network-friendly** — detects and prints the LAN URL (prefers the Wi‑Fi adapter) on startup.
 
-1: Obviously, you need to have NodeJS installed on your computer.  
-2: Clone this project to your computer.  
-3: Go to the **Terminal** and run "**npm install**" to install all the dependencies.  
-    npm init -y  
-    npm install express multer
+## Requirements
 
-## Initial Setting
+- [Node.js](https://nodejs.org/) 18 or newer (the server uses built-in `crypto.randomUUID`).
+- All devices on the **same network** (Wi‑Fi or LAN).
 
-1: Yeah, your *Phone* and *PC* should be in the exact **Same Network (WIFI or LAN)**.  
-2: Your Phone should be able to access the Server's IP address (**SEE HOW TO USE**).
+## Quick start
 
-## HOW TO USE
+```bash
+# 1. Install dependencies
+cd EZFileTransfer
+npm install
 
-1: Make sure you are in this directory: "**ReactJS_EZ_File_Transfer\EZFileTransfer**".  
-2: Once you have cloned this project, just make sure you go to the **Terminal** and run "**node ./Server/server.js**".  
-3: And it may show something like: "Access URL: <http://192.X.X.X:3000>" (**Or check your console with *ipconfig***).  
-4: Use your *Phone & PC Browser* to open the URL, and you will see a page.  
-5: Then you can play with FILE transfer between your Phone and PC.  
-6: **Kill The Terminal** Then, you can stop the server.
+# 2. Start the server
+node ./Server/server.js
+```
 
-## HOW TO CLEAN UP
+The console prints the address to open:
 
-1: You will find out a **uploads** folder in your project directory, and all the files you uploaded will be stored in that folder.  
-2: Just **Delete** the folder or whatever file you wish to delete, and you are good to go.
+```
+Access URL: http://192.168.1.20:3000
+```
 
-## Future Development
+Open that URL on any device on the same network — phone, laptop, tablet — and start transferring. Press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the terminal to stop the server.
 
-1: I am planning to add more features to this project.  
-2: Better UI.  
-3: Additional Features.  
+### Windows helper scripts
 
-## Additional Information
+From the `EZFileTransfer` folder:
 
-1: This project is still in development.  
-2: Currently is just a simple file transfer tool (**Very Dummy But Actually Works**).  
-3: Don't expect this project to be perfect. I built this for myself and my friends. Why? Because I don't know how to transfer files between my Phone and PC (**I am serious, I don't really know how......**).  
-4: I know, this is too dummy, thus I will upgrade this thing to a better version.
+- `start.bat` — launches the server in the background and records its process id.
+- `stop.bat` — stops that recorded server process.
+
+## Usage
+
+1. **Upload** — drop files onto the page (or click *Select Files*), then click *Upload All*.
+2. **Filename** — leave *Use Original Filename* off for random unique names, or turn it on to keep the real name (duplicates are suffixed automatically).
+3. **Download** — the *Download* section lists every file currently on the server; click one to save it to that device.
+4. **Cleanup** — uploaded files live in `EZFileTransfer/Server/uploads/`. Delete anything there to remove it.
+
+## Project structure
+
+```
+EZFileTransfer/
+├── Server/
+│   ├── server.js          # Express app: upload, list, download, static serving
+│   └── uploads/           # Stored files (.temp/ is used during upload)
+├── Public/
+│   ├── index.html         # Single-page UI
+│   ├── css/style.css      # Styling
+│   └── Script/script.js   # Front-end upload/queue/progress logic
+├── start.bat / stop.bat   # Windows convenience scripts
+└── package.json
+```
+
+## HTTP API
+
+| Method | Route | Description |
+| ------ | ----- | ----------- |
+| `POST` | `/upload` | Upload a file. Form field `file`; optional `useOriginalFilename` (`"true"` to keep the original name). |
+| `GET` | `/files` | List uploaded files as JSON. |
+| `GET` | `/download/:filename` | Download a stored file. |
+| `GET` | `/` | Serve the web UI. |
+
+## Notes
+
+- **Development tool, not a hardened service.** There is no authentication, so anyone on the network can upload to and download from the server. Use it on a trusted network.
+- **Port** is set to `3000` in `Server/server.js`; edit that constant if it conflicts.
+- Filenames are sanitized (directory components are stripped) when saved and served.
+
+## License
+
+Released under the [MIT License](LICENSE).
